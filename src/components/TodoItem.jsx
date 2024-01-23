@@ -1,7 +1,8 @@
-import { useReducer } from "react";
+import { useReducer, useRef } from "react";
 
 function TodoApp() {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const inputRef = useRef(null);
 
   const addItem = (newItem) => {
     dispatch({ type: "addItem", payload: newItem });
@@ -15,16 +16,20 @@ function TodoApp() {
     <div>
       <h1>Todo App</h1>
       <input
+        className="space-y-4"
         type="text"
+        ref={inputRef}
         placeholder="Add a todo"
         onKeyUp={(e) => {
           if (e.key === "Enter") {
-            addItem(e.target.value);
+            if (e.target.value.length != 0) {
+              addItem(e.target.value);
+            }
             e.target.value = "";
           }
         }}
       />
-      <ul>
+      <ul className="space-y-5">
         {state.items.map((item, index) => (
           <li key={index}>
             {item.hidden ? "This is hidden" : item.title}
@@ -32,6 +37,9 @@ function TodoApp() {
           </li>
         ))}
       </ul>
+      <button onClick={() => inputRef.current.focus()} className="my-3">
+        Focus Input
+      </button>
     </div>
   );
 }
